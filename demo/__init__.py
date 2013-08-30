@@ -25,16 +25,17 @@ def element_builder3(bassist):
 
 
 def main(global_conf, root):
-    condition = dict(db=dict(drum='ritsu',
-                             bass='mio'))
+    condition = {'db': {'drum': 'ritsu',
+                        'bass': 'mio'}}
 
     root = (
         node('top',
              path_mathching([''])),
     )
 
-    route = {'top': ('templates/index.mako', {'context1': (drummer_collector, element_builder1),
-                                              'context2': (drummer_collector, element_builder2),
-                                              'context3': (bassist_collector, element_builder3)})}
+    route = {'top': ('templates/index.mako',
+                     {'context1': (drummer_collector, element_builder1),
+                      'context2': (drummer_collector, element_builder2),
+                      'context3': (bassist_collector, element_builder3)})}
 
     return make_gargant(condition, route, root)

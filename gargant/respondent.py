@@ -15,4 +15,3 @@ def respondent(renderer_name, context):
 def renderer_factory(renderer_name):
     template = Template(filename=renderer_name)
     return template.render
-
