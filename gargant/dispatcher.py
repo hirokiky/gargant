@@ -1,19 +1,19 @@
 """
 root = (
     node(
-        (matching(''),
-         matching('')),
-        'top'  # leaf
+        # leaf
+        'top',
+        matching(''),
+        matching('')),
     ),
     node(
-        (matching(''),),
+        # tree
         (
-            # tree
-            node(
-                (matching(''),),
-                'hoge'  #leaf
-            )
-        )
+            node(# leaf
+                 'child',
+                 matching('')),
+        ),
+        matching(''),
     )
 )
 """
