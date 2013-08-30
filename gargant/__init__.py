@@ -1,7 +1,7 @@
 from webob.dec import wsgify
 from webob.exc import HTTPNotFound
 
-from gargant.case import case_parser
+from gargant.context import context_builder
 from gargant.dispatcher import dispatcher_factory, NotMetched
 from gargant.respondent import respondent
 
@@ -18,9 +18,16 @@ def make_gargant(condition, route, root):
         except NotMetched:
             raise HTTPNotFound('condition did not matched any cases.')
 
-        renderer_name, context = case_parser(route[case_name], condition)
+        case = route[case_name]
+        renderer_name, contexter = case[0]
+        sideeffects = case[1:]
+        context = context_builder(contexter, condition)
 
         response = respondent(renderer_name, context)
+
+        for sideeffect, effection in sideeffects:
+            effecter = context_builder(effection, condition)
+            sideeffect(**effecter)
 
         return response
     return _gargant
