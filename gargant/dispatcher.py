@@ -47,7 +47,7 @@ def node(case_name, *matching):
     return _dispatch
 
 
-def dispatcher_fuctory(tree):
+def dispatcher_factory(tree):
     def _dispatcher(condition):
         def handle_tree_or_leaf(tree_or_leaf):
             if isinstance(tree_or_leaf, str):
