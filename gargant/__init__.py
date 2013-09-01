@@ -32,14 +32,14 @@ def make_gargant(usercondition, route, root):
         sideeffects = case[1:]
 
         try:
-            context = context_builder(contexter, condition)
+            context = context_builder(contexter, condition, *matched)
         except NotFound:
             raise HTTPNotFound
 
         response = respondent(renderer_name, context)
 
         for sideeffect, effection in sideeffects:
-            effecter = context_builder(effection, condition, **matched)
+            effecter = context_builder(effection, condition, *matched)
             sideeffect(**effecter)
 
         return response
