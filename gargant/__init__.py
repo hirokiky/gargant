@@ -3,7 +3,7 @@ from paste.registry import RegistryManager, StackedObjectProxy
 from webob.dec import wsgify
 from webob.exc import HTTPNotFound
 
-from gargant.context import context_builder
+from gargant.context import context_builder, NotFound
 from gargant.dispatcher import dispatcher_factory, NotMetched
 from gargant.respondent import respondent
 
@@ -30,7 +30,11 @@ def make_gargant(usercondition, route, root):
         case = route[case_name]
         renderer_name, contexter = case[0]
         sideeffects = case[1:]
-        context = context_builder(contexter, condition)
+
+        try:
+            context = context_builder(contexter, condition)
+        except NotFound:
+            raise HTTPNotFound
 
         response = respondent(renderer_name, context)
 
