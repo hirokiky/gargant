@@ -18,5 +18,6 @@ setup(
         'webob',
         'mako',
         'gearbox',
+        'paste',
     ],
 )

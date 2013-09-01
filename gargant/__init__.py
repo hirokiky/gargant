@@ -1,3 +1,5 @@
+from paste.registry import RegistryManager, StackedObjectProxy
+
 from webob.dec import wsgify
 from webob.exc import HTTPNotFound
 
@@ -6,10 +8,17 @@ from gargant.dispatcher import dispatcher_factory, NotMetched
 from gargant.respondent import respondent
 
 
-def make_gargant(condition, route, root):
+condition = StackedObjectProxy()
+
+
+def make_gargant(usercondition, route, root):
     @wsgify
     def _gargant(request):
+        request.environ['paste.registry'].register(condition, usercondition)
+
         condition['request'] = request
+        condition['route'] = route
+        condition['root'] = root
 
         dispatcher = dispatcher_factory(root)
 
@@ -30,4 +39,4 @@ def make_gargant(condition, route, root):
             sideeffect(**effecter)
 
         return response
-    return _gargant
+    return RegistryManager(_gargant)
