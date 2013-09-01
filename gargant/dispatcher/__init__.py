@@ -19,34 +19,33 @@ root = (
 """
 from gargant.dispatcher.matching import (
     method_matching,
-    path_mathching,
+    path_matching,
     NotMetched,
 )
 
 
 def node(case_name, *matching):
     def _dispatch(condition):
-        if all(map(lambda x: x(condition), matching)):
-            return case_name
+        matched = map(lambda x: x(condition), matching)
+        if all(matched):
+            return case_name, matched
         else:
-            return None
+            return None, None
     return _dispatch
 
 
 def dispatcher_factory(tree):
     def _dispatcher(condition):
-        def handle_tree_or_leaf(tree_or_leaf):
-            if isinstance(tree_or_leaf, str):
-                return tree_or_leaf
-            else:
-                return _dispatcher(condition)
         for node in tree:
-            tree_or_leaf = node(condition)
+            tree_or_leaf, matched = node(condition)
             if tree_or_leaf:
-                return handle_tree_or_leaf(tree_or_leaf)
+                if isinstance(tree_or_leaf, str):
+                    return tree_or_leaf, matched
+                else:
+                    condition['matched'] = matched
+                    return _dispatcher(condition)
             else:
                 continue
         else:
             raise NotMetched
     return _dispatcher
-

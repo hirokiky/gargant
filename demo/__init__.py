@@ -1,5 +1,5 @@
 from gargant import make_gargant
-from gargant.dispatcher import node, path_mathching, method_matching
+from gargant.dispatcher import node, path_matching, method_matching
 
 
 def drummer_collector(condition):
@@ -36,9 +36,9 @@ def main(global_conf, root):
 
     root = (
         node('top',
-             path_mathching(['']), method_matching('GET')),
+             path_matching(['']), method_matching('GET')),
         node('countup',
-             path_mathching(['']), method_matching('POST'))
+             path_matching(['']), method_matching('POST'))
     )
 
     route = {

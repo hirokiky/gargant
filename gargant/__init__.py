@@ -14,7 +14,7 @@ def make_gargant(condition, route, root):
         dispatcher = dispatcher_factory(root)
 
         try:
-            case_name = dispatcher(condition)
+            case_name, matched = dispatcher(condition)
         except NotMetched:
             raise HTTPNotFound('condition did not matched any cases.')
 
