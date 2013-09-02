@@ -23,7 +23,7 @@ def make_gargant(usercondition, route, root):
         dispatcher = dispatcher_factory(root)
 
         try:
-            case_name, matched = dispatcher(condition)
+            case_name, matched = dispatcher(request.environ)
         except NotMetched:
             raise HTTPNotFound('condition did not matched any cases.')
 

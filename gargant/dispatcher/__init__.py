@@ -25,8 +25,8 @@ from gargant.dispatcher.matching import (
 
 
 def node(case_name, *matching):
-    def _dispatch(condition):
-        matched = map(lambda x: x(condition), matching)
+    def _dispatch(environ):
+        matched = map(lambda x: x(environ), matching)
         if all(matched):
             return case_name, matched
         else:
@@ -35,15 +35,14 @@ def node(case_name, *matching):
 
 
 def dispatcher_factory(tree):
-    def _dispatcher(condition):
+    def _dispatcher(environ):
         for node in tree:
-            tree_or_leaf, matched = node(condition)
+            tree_or_leaf, matched = node(environ)
             if tree_or_leaf:
                 if isinstance(tree_or_leaf, str):
                     return tree_or_leaf, matched
                 else:
-                    condition['matched'] = matched
-                    return _dispatcher(condition)
+                    return _dispatcher(environ)
             else:
                 continue
         else:

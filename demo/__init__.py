@@ -36,9 +36,9 @@ def main(global_conf, root):
 
     root = (
         node('top',
-             path_matching(['']), method_matching('GET')),
+             path_matching(['']), method_matching('get')),
         node('countup',
-             path_matching(['']), method_matching('POST'))
+             path_matching(['']), method_matching('post'))
     )
 
     route = {
