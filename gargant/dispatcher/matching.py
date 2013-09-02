@@ -20,6 +20,10 @@ def path_matching(matching_list):
     def _matching(condition):
         url_kwargs = {'matching_list': matching_list}
         path_list = condition['request'].path.split('/')[1:]
+
+        if len(path_list) != len(matching_list):
+            return None
+        
         for path, matching in map(None, path_list, matching_list):
             key = brace_match(matching)
             if key:
