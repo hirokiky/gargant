@@ -19,5 +19,6 @@ setup(
         'mako',
         'gearbox',
         'paste',
+        'gargant.dispatch',
     ],
 )

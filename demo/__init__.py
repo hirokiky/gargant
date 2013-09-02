@@ -1,5 +1,5 @@
-from gargant import make_gargant
-from gargant.dispatcher import node, path_matching, method_matching
+from gargant.wsgiapp import make_gargant
+from gargant.dispatch import node, path_matching, method_matching
 
 
 def drummer_collector(condition, *args):
