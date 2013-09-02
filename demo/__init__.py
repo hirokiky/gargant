@@ -2,12 +2,12 @@ from gargant import make_gargant
 from gargant.dispatcher import node, path_matching, method_matching
 
 
-def drummer_collector(condition):
+def drummer_collector(condition, *args):
     drummer = condition['db'].get('drum')
     return drummer
 
 
-def bassist_collector(condition):
+def bassist_collector(condition, *args):
     bassist = condition['db'].get('bass')
     return bassist
 
