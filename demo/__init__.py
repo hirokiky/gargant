@@ -1,5 +1,5 @@
 from gargant.wsgiapp import make_gargant
-from gargant.dispatch import node, path_matching, method_matching
+from gargant.dispatch import Node, path_matching, method_matching
 
 
 def drummer_collector(condition, *args):
@@ -34,11 +34,32 @@ def main(global_conf, root):
     condition = {'db': {'drum': 'ritsu',
                         'bass': 'mio'}}
 
-    root = (
-        node('top',
-             path_matching(['']), method_matching('get')),
-        node('countup',
-             path_matching(['']), method_matching('post'))
+    tree = Node(
+        (path_matching(['']),),
+        children=(
+            Node(
+                (path_matching(['child']),),
+                case='child',
+                name='child',
+                children=(
+                    Node(
+                        (path_matching(['granchild']),),
+                        case='granchild',
+                        name='granchild',
+                    ),
+                )
+            ),
+            Node(
+                (method_matching('get'),),
+                case='top',
+                name='top',
+            ),
+            Node(
+                (method_matching('post'),),
+                case='countup',
+                name='countup',
+            ),
+        )
     )
 
     route = {
@@ -48,6 +69,15 @@ def main(global_conf, root):
               'context2': (drummer_collector, element_builder2),
               'context3': (bassist_collector, element_builder3)}),
         ),
+        'child': (
+            ('templates/child.mako',
+             {'context1': (drummer_collector, element_builder1)}),
+        ),
+        'granchild': (
+            ('templates/child.mako',
+             {'context1': (drummer_collector, element_builder2)}),
+        ),
+
         'countup': (
             ('templates/index.mako',
              {'context1': (drummer_collector, element_builder1),
@@ -58,4 +88,4 @@ def main(global_conf, root):
         ),
     }
 
-    return make_gargant(condition, route, root)
+    return make_gargant(condition, route, tree)
