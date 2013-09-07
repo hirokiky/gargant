@@ -2,14 +2,12 @@ from gargant.wsgiapp import make_gargant
 from gargant.dispatch import Node, path_matching, method_matching
 
 
-def drummer_collector(condition, *args):
-    drummer = condition['db'].get('drum')
-    return drummer
+def drummer_collector(context):
+    return context.ritsu
 
 
-def bassist_collector(condition, *args):
-    bassist = condition['db'].get('bass')
-    return bassist
+def bassist_collector(context):
+    return context.mio
 
 
 def element_builder1(drummer):
@@ -30,6 +28,19 @@ def sideeffect_factory(condition):
     return _sideeffect
 
 
+class HTTAdapter(object):
+    def __init__(self, context):
+        self.context = context
+
+    @property
+    def mio(self):
+        return self.context['db']['drum']
+
+    @property
+    def ritsu(self):
+        return self.context['db']['drum']
+
+
 def main(global_conf, root):
     condition = {'db': {'drum': 'ritsu',
                         'bass': 'mio'}}
@@ -38,28 +49,19 @@ def main(global_conf, root):
         (path_matching(['']),),
         children=(
             Node(
-                (path_matching(['child']),),
-                case='child',
-                name='child',
-                children=(
-                    Node(
-                        (path_matching(['granchild']),),
-                        case='granchild',
-                        name='granchild',
-                    ),
-                )
-            ),
-            Node(
                 (method_matching('get'),),
                 case='top',
                 name='top',
+                adapter_factory=lambda x: lambda x: x,
             ),
             Node(
                 (method_matching('post'),),
                 case='countup',
                 name='countup',
+                adapter_factory=lambda x: lambda x: x,
             ),
-        )
+        ),
+        adapter_factory=lambda x: HTTAdapter
     )
 
     route = {
@@ -69,15 +71,6 @@ def main(global_conf, root):
               'context2': (drummer_collector, element_builder2),
               'context3': (bassist_collector, element_builder3)}),
         ),
-        'child': (
-            ('templates/child.mako',
-             {'context1': (drummer_collector, element_builder1)}),
-        ),
-        'granchild': (
-            ('templates/child.mako',
-             {'context1': (drummer_collector, element_builder2)}),
-        ),
-
         'countup': (
             ('templates/index.mako',
              {'context1': (drummer_collector, element_builder1),
